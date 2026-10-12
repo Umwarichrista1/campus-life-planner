@@ -1,0 +1,38 @@
+header#nav{
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: bisque;
+    width: 108px;
+    height: 100vh;
+    border-radius: 10px;
+    padding: 25px 20px;
+}
+a.link{
+    text-decoration: none;
+    color: black;
+    display: flex; 
+    padding: 20px;
+}
+
+h1 {
+    font-size: 30px;
+}
+section#about
+ {
+    background-color: rosybrown;
+    height: 17pc;
+}
+main#main-content
+ {
+    margin-left: 146px;
+    box-sizing: border-box;
+}
+footer.footer {
+    background-color: cadetblue;
+    height: auto;
+    box-sizing: border-box;
+    padding: 0px 200px;
+    margin-top: auto;
+    position: static;
+}
