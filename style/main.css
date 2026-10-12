@@ -1,18 +1,12 @@
-header#nav{
-    position: fixed;
-    top: 0;
-    left: 0;
+header#nav {
     background: bisque;
-    width: 108px;
-    height: 100vh;
     border-radius: 10px;
     padding: 25px 20px;
 }
-a.link{
+a.link {
     text-decoration: none;
     color: black;
-    display: flex; 
-    padding: 20px;
+    padding: 10px;
 }
 
 h1 {
@@ -21,18 +15,61 @@ h1 {
 section#about
  {
     background-color: rosybrown;
-    height: 17pc;
+   padding: 20px;
 }
-main#main-content
- {
-    margin-left: 146px;
+main#main-content {
     box-sizing: border-box;
+    padding: 0 16px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+button {
+    margin-top: 10px;
 }
 footer.footer {
     background-color: cadetblue;
-    height: auto;
     box-sizing: border-box;
-    padding: 0px 200px;
-    margin-top: auto;
-    position: static;
+    padding: 16px;
+}
+  a:focus,
+button:focus,
+input:focus {
+    outline: 3px solid rgb(21, 21, 60);
+    outline-offset: 2px;
+}
+
+table,
+input {
+    width: 100%;
+    box-sizing: border-box;
+}
+/*table*/
+@media (min-width: 768px) {
+    h1 {
+        font-size: 36px;
+    }
+    main#main-content {
+        padding: 0 32px;
+    }
+}
+
+/* Desktop: 1024px and up */
+@media (min-width: 1024px) {
+    header#nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 108px;
+        height: 100vh;
+    }
+       a.link {
+        display: flex;
+    } 
+        main#main-content {
+        margin-left: 146px;
+    }
+        footer.footer {
+        margin-left: 146px;
+    }
+  
 }
