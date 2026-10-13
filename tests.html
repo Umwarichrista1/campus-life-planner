@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>validator tests</title>
+</head>
+<body>
+    <h1>validator tests</h1>
+    <ul id="results"></ul>
+    <script type="module" >
+        import {
+            isValidTitle, isValidDueDate ,isValidDuration,isValidTag , hasRepeatedWord 
+        }from "./scripts/validators.js";
+
+        const results = document.getElementById("results");
+
+        function check(name,actual,expected){
+            const li = document.createElement("li");
+            if(actual === expected){
+                li.textContent = "PASS :" + name;
+            }else{
+                li.textContent = "FAIL :" + name;
+            }
+            results.appendChild(li);
+        }
+        check("study for the quiz",isValidTitle("study for the quiz"),true);
+        check("01",isValidDuration("01"),false);   
+        check("2026-09-26",isValidDueDate("2026-09-26"),true);
+        check("study1",isValidTag("study1"),false);
+        check("study study",hasRepeatedWord("study study"),true);
+
+        </script>
+</body>
+</html>

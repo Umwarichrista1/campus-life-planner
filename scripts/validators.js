@@ -13,7 +13,7 @@ export function isValidDuration(text){
 }
 const tagrule =/^[A-Za-z]+(?:[ -][A-Za-z]+)*$/;
 export function isValidTag(text){
-      return tagrule.test(date);
+      return tagrule.test(text);
 }
 
 const repeateRule = /\b(\w+)\s+\1\b/;
