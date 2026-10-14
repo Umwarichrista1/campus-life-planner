@@ -42,6 +42,38 @@ function compileRegex(text,flags){
         return null;
     }
 }
+function getRegex(){
+    const text = searchInput.value;
+    if(text === ""){
+        return null;
+    }
+    return compileRegex(text,caseToggle.checked ? "i" : "");
+}
+function setHighlighted(cell,text,re){
+    cell.textContent = "";
+    text = String(text);
+
+    if(re === null){
+        cell.textContent = text;
+        return;
+    }
+    const globalRe = new RegExp(re.source, re.flags + "g");
+    let last = 0;
+
+    for (const m of text.matchAll(globalRe)){
+        if(m[0] ===""){
+            continue;
+        }
+        cell.appendChild(document.createTextNode(text.slice(last,m.index)));
+
+        const mark = document.createElement("mark");
+        mark.textContent = m[0];
+        cell.appendChild(mark);
+
+        last = m.index + m[0].length;
+    }
+    cell.appendChild(document.createTextNode(text.slice(last)));
+}
 
 function getFiltered(){
     const text =searchInput.value;
@@ -97,15 +129,19 @@ if(list.length === 0 ){
     body.innerHTML ='<td><td colspan="5"></td>no matching tasks</td></tr>';
     return;
 }
+
+const re = getRegex();
+
     for(const r of list){
         const row =document.createElement("tr");
 
         const tdTitle =document.createElement("td");
-        tdTitle.textContent =r.title;
+        setHighlighted(tdTitle, r.title , re);
+    
         row.appendChild(tdTitle);
 
         const tdDate =document.createElement("td");
-        tdDate.textContent = r.dueDate;
+        setHighlighted(tdDate, r.dueDate, re);
         row.appendChild(tdDate);
 
         const tdDuration = document.createElement("td");
@@ -113,7 +149,7 @@ if(list.length === 0 ){
         row.appendChild(tdDuration);
 
         const tdTag = document.createElement("td");
-        tdTag.textContent =r.tag;
+        setHighlighted(tdTag, r.tag, re);
         row.appendChild(tdTag);
 
         const tdActions = document.createElement("td");
