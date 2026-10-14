@@ -11,6 +11,8 @@ const tag=document.getElementById("tag");
 const tagError=document.getElementById("tag-error");
 const body = document.getElementById("records-body");
 const cancelBtn = document.getElementById("cancel-btn");
+const sortSelect = document.getElementById("sort");
+
 
 
 let records = [];
@@ -31,6 +33,26 @@ function clearForm(){
     
 }
 
+function getSorted(){
+    const list = records.slice();
+    const choice = sortSelect.value;
+    if(choice.startsWith("date")){
+        list.sort(function(a,b){return a.dueDate.localeCompare(b.dueDate);});
+    }
+    if(choice.startsWith("title")){
+        list.sort(function(a,b){return a.title.localeCompare(b.title);});
+    }
+    if(choice.startsWith("duration")){
+        list.sort(function(a,b){return a.duration - b.duration; });
+    }
+    if(choice.endsWith("desc")){
+       list.reverse();
+    }
+    
+
+return list;
+}
+
 function render() {
     body.textContent ="";
 
@@ -38,7 +60,7 @@ if (records.length === 0){
     body.innerHTML ='<tr><td colspan ="5">no task yet.</td></tr>';
     return;
 }
-    for(const r of records){
+    for(const r of getSorted()){
         const row =document.createElement("tr");
 
         const tdTitle =document.createElement("td");
@@ -181,5 +203,5 @@ cancelBtn.addEventListener("click",function(){
     clearForm();
     status.textContent ="";
 });
-
+sortSelect.addEventListener("change",render);
 render();
