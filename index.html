@@ -41,7 +41,7 @@
     <form id="record-form" novalidate>
         <label for="title">Title</label>
         <input type="text" id="title" name="title"  aria-describedby="t-error">
-        <p class="title-error" id="t-error"></p>
+        <p class="error" id="t-error"></p>
 
         <label for="dueDate">Due date (YYYY-MM-DD)</label>
         <input type="text" id="dueDate" name="dueDate" aria-describedby="dderror">
@@ -53,7 +53,7 @@
 
         <label for="tag">Tag</label>
         <input type="text" id="tag" name="tag" aria-describedby="t-error">
-        <p class="error" id="t-error"></p>
+        <p class="error" id="tag-error"></p>
 
         <button type="submit">Save task</button>
         <button type="button" id="cancel-btn">Cancel</button>
