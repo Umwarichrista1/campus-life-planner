@@ -12,6 +12,9 @@ const tagError=document.getElementById("tag-error");
 const body = document.getElementById("records-body");
 const cancelBtn = document.getElementById("cancel-btn");
 const sortSelect = document.getElementById("sort");
+const searchInput= document.getElementById("search");
+const caseToggle = document.getElementById("case-toggle");
+const searchMsg = document.getElementById("search-msg");
 
 
 
@@ -32,9 +35,36 @@ function clearForm(){
 
     
 }
+function compileRegex(text,flags){
+    try{
+        return new RegExp(text,flags);
+    }catch (e){
+        return null;
+    }
+}
 
+function getFiltered(){
+    const text =searchInput.value;
+
+    if (text === ""){
+        searchMsg.textContent ="";
+        return records.slice()
+    }
+    const flags = caseToggle.checked ? "i" :"";
+    const re = compileRegex(text,flags);
+
+    if(re === null){
+        searchMsg.textContent = "Invalid pattern";
+        return records.slice();
+    }
+
+    searchMsg.textContent ="";
+    return records.filter(function(r){
+        return re.test(r.title) || re.test(r.tag) || re.test (r.dueDate);
+    });
+}
 function getSorted(){
-    const list = records.slice();
+    const list = getFiltered();
     const choice = sortSelect.value;
     if(choice.startsWith("date")){
         list.sort(function(a,b){return a.dueDate.localeCompare(b.dueDate);});
@@ -60,7 +90,14 @@ if (records.length === 0){
     body.innerHTML ='<tr><td colspan ="5">no task yet.</td></tr>';
     return;
 }
-    for(const r of getSorted()){
+
+const list = getSorted();
+
+if(list.length === 0 ){
+    body.innerHTML ='<td><td colspan="5"></td>no matching tasks</td></tr>';
+    return;
+}
+    for(const r of list){
         const row =document.createElement("tr");
 
         const tdTitle =document.createElement("td");
@@ -204,4 +241,6 @@ cancelBtn.addEventListener("click",function(){
     status.textContent ="";
 });
 sortSelect.addEventListener("change",render);
+searchInput.addEventListener("input",render);
+caseToggle.addEventListener("change",render);
 render();
