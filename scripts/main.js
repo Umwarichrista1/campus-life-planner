@@ -9,8 +9,54 @@ const duration = document.getElementById("duration");
 const durError= document.getElementById("duration-error");
 const tag=document.getElementById("tag");
 const tagError=document.getElementById("tag-error");
+const body = document.getElementById("records-body");
 
 let records = [];
+
+function render() {
+    body.textContent ="";
+
+if (records.length === 0){
+    body.innerHTML ='<tr><td colspan ="5">no task yet.</td></tr>';
+    return;
+}
+    for(const r of records){
+        const row =document.createElement("tr");
+
+        const tdTitle =document.createElement("td");
+        tdTitle.textContent =r.title;
+        row.appendChild(tdTitle);
+
+        const tdDate =document.createElement("td");
+        tdDate.textContent = r.dueDate;
+        row.appendChild(tdDate);
+
+        const tdDuration = document.createElement("td");
+        tdDuration.textContent =r.duration;
+        row.appendChild(tdDuration);
+
+        const tdTag = document.createElement("td");
+        tdTag.textContent =r.tag;
+        row.appendChild(tdTag);
+
+        const tdActions = document.createElement("td");
+        const delBtn = document.createElement("button");
+        delBtn.textContent="Delete";
+        delBtn.setAttribute("aria-label","Delete"+r.title);
+
+        delBtn.addEventListener("click",function(){
+            records =records.filter(function(x){
+                return x.id !== r.id;
+            });
+            render();
+        });
+        tdActions.appendChild(delBtn);
+        row.appendChild(tdActions);
+
+        body.appendChild(row);
+
+    }
+}
 
 form.addEventListener("submit",function(event){
 event.preventDefault();
@@ -57,18 +103,21 @@ tagError.textContent="";
 
 
 
+
+
 const record = {
     id:"rec" + Date.now(),
     title: title.value,
     dueDate:dDate.value,
     duration:Number(duration.value),
-    tag:tag.value,
+    tag :tag.value,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
-};
-records.push(record);
-console.log(records);
-status.textContent ="saved";
-form.reset();
+   }; 
+   records.push(record);
+   render();
+   status.textContent ="saved";
+   form.reset();
 });
 
+render();
