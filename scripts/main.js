@@ -10,7 +10,7 @@ const durError= document.getElementById("duration-error");
 const tag=document.getElementById("tag");
 const tagError=document.getElementById("tag-error");
 
-
+let records = [];
 
 form.addEventListener("submit",function(event){
 event.preventDefault();
@@ -21,7 +21,7 @@ if (!isValidTitle(title.value)){
     status.textContent="";
     return;
 }
-title.setAttribute("aria-Invalid","false");
+title.setAttribute("aria-invalid","false");
 error.textContent ="";
 
  //due date
@@ -55,6 +55,20 @@ if(!isValidTag(tag.value)){
 tag.setAttribute("aria-invalid","false");
 tagError.textContent="";
 
+
+
+const record = {
+    id:"rec" + Date.now(),
+    title: title.value,
+    dueDate:dDate.value,
+    duration:Number(duration.value),
+    tag:tag.value,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+};
+records.push(record);
+console.log(records);
 status.textContent ="saved";
+form.reset();
 });
 
