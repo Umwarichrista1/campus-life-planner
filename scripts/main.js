@@ -10,8 +10,26 @@ const durError= document.getElementById("duration-error");
 const tag=document.getElementById("tag");
 const tagError=document.getElementById("tag-error");
 const body = document.getElementById("records-body");
+const cancelBtn = document.getElementById("cancel-btn");
+
 
 let records = [];
+let editingId =null;
+
+function clearForm(){
+    form.reset();
+    editingId =null;
+    error.textContent ="";
+    dError.textContent="";
+    durError.textContent="";
+    tagError.textContent="";
+    title.setAttribute("aria-invalid","false");
+    dDate.setAttribute("aria-invalid","false");
+    duration.setAttribute("aria-invalid","false");
+    tag.setAttribute("aria-invalid","false");
+
+    
+}
 
 function render() {
     body.textContent ="";
@@ -40,16 +58,36 @@ if (records.length === 0){
         row.appendChild(tdTag);
 
         const tdActions = document.createElement("td");
+
+        const editBtn = document.createElement("button");
+        editBtn.textContent ="Edit";
+        editBtn.setAttribute("aria-label","Edit " + r.title);
+
+        editBtn.addEventListener("click",function(){
+            clearForm();
+            title.value=r.title;
+            dDate.value=r.dueDate;
+            duration.value = r.duration;
+            tag.value=r.tag;
+            editingId=r.id;
+            status.textContent ="Edit and change then click save task"
+            title.focus();
+        });
+        
         const delBtn = document.createElement("button");
         delBtn.textContent="Delete";
-        delBtn.setAttribute("aria-label","Delete"+r.title);
+        delBtn.setAttribute("aria-label","Delete " + r.title);
 
         delBtn.addEventListener("click",function(){
             records =records.filter(function(x){
                 return x.id !== r.id;
             });
+            if(editingId ===r.id){
+                clearForm();
+            }
             render();
         });
+        tdActions.appendChild(editBtn);
         tdActions.appendChild(delBtn);
         row.appendChild(tdActions);
 
@@ -101,12 +139,29 @@ if(!isValidTag(tag.value)){
 tag.setAttribute("aria-invalid","false");
 tagError.textContent="";
 
+if(editingId){
+    for(const r of records){
+        if(r.id === editingId){
+            r.title = title.value;
+            r.dueDate =dDate.value;
+            r.duration = Number(duration.value);
+            r.tag = tag.value;
+            r.updatedAt = new Date().toISOString();
+
+        }
+    }
+    render();
+    clearForm();
+    status.textContent = "updated";
+    return;
+}
+
 
 
 
 
 const record = {
-    id:"rec" + Date.now(),
+    id:"rec_" + Date.now(),
     title: title.value,
     dueDate:dDate.value,
     duration:Number(duration.value),
@@ -114,10 +169,17 @@ const record = {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
    }; 
+
    records.push(record);
    render();
+   clearForm();
    status.textContent ="saved";
-   form.reset();
+   
+});
+
+cancelBtn.addEventListener("click",function(){
+    clearForm();
+    status.textContent ="";
 });
 
 render();
