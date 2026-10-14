@@ -61,6 +61,35 @@ mark{
         padding: 0 32px;
     }
 }
+.trend{
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    border-bottom: 2px solid #333;
+    padding-top: 8px;
+}
+.trend-col{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    font-size: 12px;
+}
+.trend-bar{
+    width: 100%;
+    background: rgb(49, 17, 17);
+    transform-origin: bottom;
+    animation: grow 0.4s ease;
+}
+
+@keyframes grow{
+    from{transform:scaleY(0);}
+    to{transform: scaleY(1);}
+}
+@media (prefers-reduced-motion: reduce){
+    .trend-bar{animation: none; }
+}
 
 /* Desktop: 1024px and up */
 @media (min-width: 1024px) {

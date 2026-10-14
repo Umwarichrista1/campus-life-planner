@@ -26,15 +26,19 @@
              
 </section>
         <section id="dashboard">
-            <h2>Dashboard</h2>
+            <h3>Dashboard</h3>
             <p>View your dashboard information here.</p>
-            <p>total task:</p>
-            <p>Total duration:</p>
-            <p>tag:</p>
+            <p>total task: <span id="stat-total">0</span></p>
+            <p>Total duration: <span id="stat-duration">0</span></p>
+            <p>tag: <span id="stat-tag">-</span></p>
+            <h4>last 7 days (min per day)</h4>
+            <div id="trend" class="trend" role="img" aria-label="Label 7 days trend" ></div>
+            <p id="cap-polite" role="status" aria-live="polite"></p>
+            <p id="cap-assertive" role="alert" aria-live="assertive"></p>
             </section>
        
        <section id="add-edit">
-    <h2>Add / Edit Task</h2>
+    <h5>Add / Edit Task</h5>
 
     <form id="record-form" novalidate>
         <label for="title">Title</label>
@@ -104,10 +108,11 @@
         </section>
 
         <section id="settings">
-            <h2>Settings</h2>
+            <h6>Settings</h6>
             <p>Manage your application settings here.</p>
-             <label for="cap">Weekly cap (minutes)</label>
-      <input id="cap" type="text">
+             <label for="cap" >Weekly cap (minutes)</label>
+      <input id="cap" type="text"type="text" inputmode="decimal" aria-describedby="cap-error">
+      <p class="error" id="cap-error"></p>
 
       <button type="button" >person min</button>
 

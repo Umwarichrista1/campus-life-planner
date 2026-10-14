@@ -15,11 +15,18 @@ const sortSelect = document.getElementById("sort");
 const searchInput= document.getElementById("search");
 const caseToggle = document.getElementById("case-toggle");
 const searchMsg = document.getElementById("search-msg");
-
-
+const  statTotal =document.getElementById("stat-total");
+const  statDuration =document.getElementById("stat-duration");
+const  statTag =document.getElementById("stat-tag");
+const trend = document.getElementById("trend");
+const capInput  = document.getElementById("cap");
+const capError  = document.getElementById("cap-error");
+const capPolite  = document.getElementById("cap-polite");
+const capAssertive  = document.getElementById("cap-assertive");
 
 let records = [];
 let editingId =null;
+let cap = null;
 
 function clearForm(){
     form.reset();
@@ -114,8 +121,84 @@ function getSorted(){
 
 return list;
 }
+ function round2(n){
+    return Math.round(n * 100)/100;
+ }
+ function setText(element, text){
+    if (element.textContent !== text){
+        element.textContent =text;
+    }
+ }
+
+ function renderStats(){
+    let sum = 0;
+    const counts ={};
+    for(const r of records){
+        sum += r.duration;
+        counts[r.tag] = (counts[r.tag] || 0) +1;
+    }
+
+    let topTag ="_";
+    for (const t in counts){
+        if (topTag === "_" || counts[t]> counts[topTag]){
+            topTag = t;
+        }
+    }
+    statTotal.textContent = records.length;
+    statDuration.textContent = round2(sum);
+    statTag.textContent = topTag;
+
+    const days =[];
+    let weekTotal = 0;
+    let max = 1;
+    for(let i = 6; i>=0; i--){
+        const d = new Date();
+        d.setDate(d.getDate() -i);
+        const key = d.toLocaleDateString("en-CA");
+
+        let total = 0;
+        for(const r of records){
+            if(r.dueDate === key){
+                total += r.duration;
+            }
+        }
+        days.push({key: key, total: total});
+        weekTotal += total;
+        if (total > max){
+            max = total;
+        }
+    }
+    trend.textContent ="";
+    let summary = "Min due per day, last 7 days";
+    for(const day of days){
+        const col =document.createElement("div");
+        col.className = "trend-col";
+        col.innerHTML = "<span>" +  round2(day.total) + "</span>" + 
+        "<div class ='trend-bar' style='height:" + Math.round(day.total/max * 100 ) + "px'></div>" + "<span>" + day.key.slice(5) + "</span>";
+
+        trend.appendChild(col);                                        
+        summary += day.key.slice(5) + ": " + round2(day.total) + ", ";   
+    }
+
+        trend.setAttribute("aria-label" , summary);
+
+        let polite = "";
+        let loud ="";
+        if (cap !== null){
+            const left = round2(cap - weekTotal);
+        if (left >= 0){
+            polite = left + " minutes left of your weekly cap.";
+        } else {
+            loud = "Over your weekly cap by " + Math.abs(left) + " minutes!";
+        }
+    }
+   
+    setText(capPolite,polite);
+    setText(capAssertive,loud);
+  }
 
 function render() {
+    renderStats();
     body.textContent ="";
 
 if (records.length === 0){
@@ -126,7 +209,7 @@ if (records.length === 0){
 const list = getSorted();
 
 if(list.length === 0 ){
-    body.innerHTML ='<td><td colspan="5"></td>no matching tasks</td></tr>';
+    body.innerHTML ='<td><td colspan="5">no matching tasks</td></tr>';
     return;
 }
 
@@ -276,6 +359,17 @@ cancelBtn.addEventListener("click",function(){
     clearForm();
     status.textContent ="";
 });
+capInput.addEventListener("input", function(){
+    const text = capInput.value;
+    const ok = text === "" || isValidDuration(text);
+
+    cap = (text !== "" && ok) ? Number(text) : null;
+    capError.textContent = ok ? "" : "Enter a number";
+    capInput.setAttribute("aria-invalid", ok ? "false" : "true");
+    renderStats();
+});
+
+
 sortSelect.addEventListener("change",render);
 searchInput.addEventListener("input",render);
 caseToggle.addEventListener("change",render);
