@@ -23,10 +23,54 @@ const capInput  = document.getElementById("cap");
 const capError  = document.getElementById("cap-error");
 const capPolite  = document.getElementById("cap-polite");
 const capAssertive  = document.getElementById("cap-assertive");
+const   trendTitle = document.getElementById("trend-title");
+const  unitSelect= document.getElementById("unit");
+const  exportBtn= document.getElementById("export-btn");
+const  importFile= document.getElementById("import-file");
+const  dataMsg= document.getElementById("data-msg");
 
-let records = [];
+const KEY ="planner:records";
+const SETTING_KEY = "planner:settings";
+
+function saveRecords(){
+    localStorage.setItem(KEY ,JSON.stringify(records));
+}
+function loadRecords(){
+    try{
+        const data = JSON.parse(localStorage.getItem(KEY));
+        return Array.isArray(data) ? data :[];
+
+    } catch(e) {
+        return[];
+    }
+}
+
+
+let records = loadRecords();
 let editingId =null;
 let cap = null;
+let unit ="minutes";
+
+loadSettings();
+
+function saveSettings(){
+    localStorage.setItem(SETTING_KEY, JSON.stringify({cap: cap, unit: unit}));
+}
+ function loadSettings(){
+    try{
+        const s = JSON.parse(localStorage.getItem(SETTING_KEY));
+        if(s && (s.unit === "minutes" || s.unit === "hours")){
+            unit = s.unit;
+        }
+        if(s && typeof s.cap === "number" && s.cap >=0){
+            cap = s.cap;
+        }
+    }catch(e) {
+
+    }
+ 
+}
+
 
 function clearForm(){
     form.reset();
@@ -130,6 +174,16 @@ return list;
     }
  }
 
+ function inUnit(minutes){
+    return unit === "hours" ? round2(minutes / 60) : round2(minutes);
+}
+function unitName(){
+    return unit === "hours" ? "hours" : "minutes";
+}
+function showTime(minutes){
+    return inUnit(minutes) + (unit === "hours" ? " h" : " min");
+}
+
  function renderStats(){
     let sum = 0;
     const counts ={};
@@ -145,7 +199,7 @@ return list;
         }
     }
     statTotal.textContent = records.length;
-    statDuration.textContent = round2(sum);
+    statDuration.textContent = showTime(sum);
     statTag.textContent = topTag;
 
     const days =[];
@@ -168,16 +222,19 @@ return list;
             max = total;
         }
     }
+
+    trendTitle.textContent ="Last 7 days (" + unitName() + " due per day)";
     trend.textContent ="";
-    let summary = "Min due per day, last 7 days";
+    let summary = "Time due per day in " + unitName() + ", last 7 days.";
+
     for(const day of days){
         const col =document.createElement("div");
         col.className = "trend-col";
-        col.innerHTML = "<span>" +  round2(day.total) + "</span>" + 
+        col.innerHTML = "<span>" +  inUnit(day.total) + "</span>" + 
         "<div class ='trend-bar' style='height:" + Math.round(day.total/max * 100 ) + "px'></div>" + "<span>" + day.key.slice(5) + "</span>";
 
         trend.appendChild(col);                                        
-        summary += day.key.slice(5) + ": " + round2(day.total) + ", ";   
+        summary += day.key.slice(5) + ": " + inUnit(day.total) + ", ";   
     }
 
         trend.setAttribute("aria-label" , summary);
@@ -187,9 +244,9 @@ return list;
         if (cap !== null){
             const left = round2(cap - weekTotal);
         if (left >= 0){
-            polite = left + " minutes left of your weekly cap.";
+            polite = showTime(left) + " left of your weekly cap.";
         } else {
-            loud = "Over your weekly cap by " + Math.abs(left) + " minutes!";
+            loud = "Over your weekly cap by " + showTime( Math.abs(left)) + "!";
         }
     }
    
@@ -209,7 +266,7 @@ if (records.length === 0){
 const list = getSorted();
 
 if(list.length === 0 ){
-    body.innerHTML ='<td><td colspan="5">no matching tasks</td></tr>';
+    body.innerHTML ='<tr><td colspan="5">no matching tasks</td></tr>';
     return;
 }
 
@@ -228,7 +285,7 @@ const re = getRegex();
         row.appendChild(tdDate);
 
         const tdDuration = document.createElement("td");
-        tdDuration.textContent =r.duration;
+        tdDuration.textContent =showTime(r.duration);
         row.appendChild(tdDuration);
 
         const tdTag = document.createElement("td");
@@ -260,6 +317,9 @@ const re = getRegex();
             records =records.filter(function(x){
                 return x.id !== r.id;
             });
+
+            saveRecords();
+
             if(editingId ===r.id){
                 clearForm();
             }
@@ -281,6 +341,12 @@ if (!isValidTitle(title.value)){
     title.setAttribute("aria-invalid","true");
     error.textContent ="title can't be empty or start with a space";
     status.textContent="";
+    return;
+}
+if (hasRepeatedWord(title.value)){
+    title.setAttribute("aria-invalid","true");
+    error.textContent ="title has a repeated word, like 'the the'";
+    status.textContent ="";
     return;
 }
 title.setAttribute("aria-invalid","false");
@@ -328,6 +394,8 @@ if(editingId){
 
         }
     }
+
+    saveRecords();
     render();
     clearForm();
     status.textContent = "updated";
@@ -348,7 +416,9 @@ const record = {
     updatedAt: new Date().toISOString()
    }; 
 
+
    records.push(record);
+   saveRecords();
    render();
    clearForm();
    status.textContent ="saved";
@@ -359,6 +429,7 @@ cancelBtn.addEventListener("click",function(){
     clearForm();
     status.textContent ="";
 });
+
 capInput.addEventListener("input", function(){
     const text = capInput.value;
     const ok = text === "" || isValidDuration(text);
@@ -366,9 +437,114 @@ capInput.addEventListener("input", function(){
     cap = (text !== "" && ok) ? Number(text) : null;
     capError.textContent = ok ? "" : "Enter a number";
     capInput.setAttribute("aria-invalid", ok ? "false" : "true");
+    saveSettings();
     renderStats();
+
 });
 
+unitSelect.addEventListener("change",function(){
+    unit = unitSelect.value;
+   
+    saveSettings();
+    render();
+});
+exportBtn.addEventListener("click",function(){
+    const text =JSON.stringify(records, null, 2);
+    const blob = new Blob([text],{type: "application/json"});
+    const link = document.createElement("a");
+    link.href= URL.createObjectURL(blob);
+    link.download = "planner-data.json";
+    link.click();
+    URL.revokeObjectURL(link.href);
+    dataMsg.textContent = "Exported " + records.length + " tasks.";
+});
+function checkRecord(item){
+    if (typeof item !== "object" || item === null){
+        return "is not a task";
+    }
+    if (typeof item.id !== "string" || item.id === ""){
+        return "has no id";
+    }
+    if (typeof item.title !== "string" || !isValidTitle(item.title)){
+        return "has an invalid title";
+    }
+    if (typeof item.dueDate !== "string" || !isValidDueDate(item.dueDate)){
+        return "has an invalid dueDate";
+    }
+    if (typeof item.duration !== "number" || !isValidDuration(String(item.duration))){
+        return "has an invalid duration";
+    }
+    if (typeof item.tag !== "string" || !isValidTag(item.tag)){
+        return "has an invalid tag";
+    }
+    if (typeof item.createdAt !== "string" || typeof item.updatedAt !== "string"){
+        return "has no timestamps";
+    }
+    return "";
+}
+
+importFile.addEventListener("change", function(){
+    const file = importFile.files[0];
+    if(!file){
+        return;
+    }
+
+    importFile.value = "";
+
+
+    file.text().then(function(text){
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            dataMsg.textContent = "Import failed: this file is not valid JSON.";
+            return;
+        }
+
+        if (!Array.isArray(data)){
+            dataMsg.textContent = "Import failed: the file must contain a list of tasks.";
+            return;
+        }
+
+        const ids = [];
+        for (let i = 0; i < data.length; i++){
+            const problem = checkRecord(data[i]);
+            if (problem !== ""){
+                dataMsg.textContent = "Import failed: task " + (i + 1) + " " + problem + ".";
+                return;
+            }
+            if (ids.includes(data[i].id)){
+                dataMsg.textContent = "Import failed: task " + (i + 1) + " repeats an id.";
+                return;
+            }
+            ids.push(data[i].id);
+        }
+
+        if (!confirm("Replace your current tasks with " + data.length + " imported tasks?")){
+            dataMsg.textContent = "Import cancelled.";
+            return;
+        }
+
+        records = data.map(function(x){
+            return {
+                id: x.id,
+                title: x.title,
+                dueDate: x.dueDate,
+                duration: x.duration,
+                tag: x.tag,
+                createdAt: x.createdAt,
+                updatedAt: x.updatedAt
+            };
+        });
+        saveRecords();
+        render();
+        dataMsg.textContent = "Imported " + records.length + " tasks.";
+    });
+});
+
+
+capInput.value = cap === null ? "" : cap;
+unitSelect.value = unit;
 
 sortSelect.addEventListener("change",render);
 searchInput.addEventListener("input",render);

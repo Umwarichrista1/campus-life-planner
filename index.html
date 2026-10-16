@@ -26,12 +26,12 @@
              
 </section>
         <section id="dashboard">
-            <h3>Dashboard</h3>
+            <h3 id="trend-title">Dashboard</h3>
             <p>View your dashboard information here.</p>
             <p>total task: <span id="stat-total">0</span></p>
             <p>Total duration: <span id="stat-duration">0</span></p>
             <p>tag: <span id="stat-tag">-</span></p>
-            <h4>last 7 days (min per day)</h4>
+            <h4>last 7 days</h4>
             <div id="trend" class="trend" role="img" aria-label="Label 7 days trend" ></div>
             <p id="cap-polite" role="status" aria-live="polite"></p>
             <p id="cap-assertive" role="alert" aria-live="assertive"></p>
@@ -108,13 +108,26 @@
         </section>
 
         <section id="settings">
-            <h6>Settings</h6>
+            <h2>Settings</h2>
             <p>Manage your application settings here.</p>
              <label for="cap" >Weekly cap (minutes)</label>
-      <input id="cap" type="text"type="text" inputmode="decimal" aria-describedby="cap-error">
-      <p class="error" id="cap-error"></p>
+             <input id="cap" type="text" type="text" inputmode="decimal" aria-describedby="cap-error">
+             <p class="error" id="cap-error"></p>
 
-      <button type="button" >person min</button>
+             <label for="unit"> show duration in</label>
+             <select id="unit">
+                <option value="minutes">Minutes</option>
+                <option value="hours">Hours</option>
+             </select>
+             <h3>Backup</h3>
+             <button type="button" id="export-btn">Export JSON</button>
+
+             <label for="import-file">Import JSON</label>
+             <input type="file" id="import-file" accept=".json,application/json">
+
+             <p id="data-msg" role="status"></p>
+
+
 
         </section>
     </main>
