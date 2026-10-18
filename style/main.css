@@ -1,12 +1,24 @@
 header#nav {
-    background: bisque;
+    background: rgb(59, 115, 163);
     border-radius: 10px;
     padding: 25px 20px;
+}
+header#nav nav{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+
 }
 a.link {
     text-decoration: none;
     color: black;
     padding: 10px;
+    display: inline-block;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+}
+a.link:hover{
+    background: rgba(87, 14, 14, 0.1);
 }
 
 h1 {
@@ -17,14 +29,30 @@ section#about
     background-color: rosybrown;
    padding: 20px;
 }
+#about a{
+    color: black;
+}
 main#main-content {
     box-sizing: border-box;
     padding: 0 16px;
     max-width: 800px;
     margin: 0 auto;
 }
+
 button {
     margin-top: 10px;
+    background: rgb(62, 6, 6);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 5px;
+    cursor:pointer;
+    transition: background-color 0.2s;
+    margin: 15px;
+    align-content: center;
+}
+button:hover{
+    background: rgb(174, 125, 51);
 }
 footer.footer {
     background-color: cadetblue;
@@ -37,6 +65,10 @@ input:focus {
     outline: 3px solid rgb(21, 21, 60);
     outline-offset: 2px;
 }
+select:focus{
+    outline: 3px solid rgb(21, 21, 60);
+    outline-offset: 2px;
+}
 
 table,
 input {
@@ -46,21 +78,75 @@ input {
 input[type="checkbox"]{
     width: auto;
 }
+.table-wrap{
+    overflow: auto;
+}
+table{
+    min-width: 520px;
+}
+.error {
+    color: red;
+    margin: 4px 0;
+}
+
 mark{
     background: rgba(221, 221, 35, 0.66);
     color: rgb(0, 0, 0);
     padding: 0 2px;
     border-radius: 2px;
 }
-/*table*/
-@media (min-width: 768px) {
-    h1 {
-        font-size: 36px;
-    }
-    main#main-content {
-        padding: 0 32px;
-    }
+.sr-only{
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
 }
+.skip-link{
+    position: absolute;
+    top: -60px;
+    left: 0;
+    background:bisque ;
+    color: #333;
+    padding:10px;
+}
+.skip-link:focus{
+    top:0;
+}
+.trend{
+    display: flex;
+    align-items: flex-end;
+    gap:6px;
+    border-bottom: 2px solid #333;
+    padding-top: 8px;
+}
+.trend-col{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    font-size: 12px;
+}
+.trend-bar{
+    width: 100px;
+    background: rgba(57, 11, 11, 0.678) ;
+    transform-origin: bottom;
+    animation: grow 0.4s ease;
+}
+
+@keyframes grow{
+    from{transform: scaleY(0);}
+    to{transform: scaleY(1);}
+}
+@media (prefers-reduced-motion: reduce){
+    .trend-bar{animation: none;}
+    button, a.link{transition: none;}
+}
+
+/*table*/
+
 .trend{
     display: flex;
     align-items: flex-end;
@@ -89,8 +175,34 @@ mark{
 }
 @media (prefers-reduced-motion: reduce){
     .trend-bar{animation: none; }
+    button,  a,link{transition: none;}
+}
+body{
+    background: #bad1e9;
+}
+main#main-content>section{
+    background: white;
+    border: 1px solid #784c4c;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 16px 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
+main#main-content>section>h2{
+margin-top: 0;
+padding-bottom: 8px;
+border-bottom: 2px solid rgb(102, 73, 130);
+}
+
+@media (min-width: 768px) {
+    h1 {
+        font-size: 36px;
+    }
+    main#main-content {
+        padding: 0 32px;
+    }
+}
 /* Desktop: 1024px and up */
 @media (min-width: 1024px) {
     header#nav {
@@ -100,11 +212,17 @@ mark{
         width: 108px;
         height: 100vh;
     }
+    header#nav nav{
+        flex-direction: column;
+    }
        a.link {
         display: flex;
     } 
         main#main-content {
         margin-left: 146px;
+        margin-right: 0;
+        max-width: none;
+        padding: 0 40px;
     }
         footer.footer {
         margin-left: 146px;

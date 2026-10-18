@@ -5,40 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>campus life planner</title>
     <link rel="stylesheet" href="style/main.css">
+    <script type="module" src="scripts/main.js"></script>
 </head>
- <script type="module" src="scripts/main.js"></script>
+
 <body>
-    <a href="#main-content">skip to content</a>
+    <a href="#main-content" class="skip-link">skip to content</a>
     <header id="nav">
         <h1>planner</h1>
-        
+        <nav aria-label="Main">
+        <a href="#home" class="link">Home </a>
         <a href="#records" class="link">record</a>
         <a href="#dashboard" class="link">dashboard</a>
-        <a href="#about" class="link">about</a>
+        <a href="#add-edit" class="link">add</a>
         <a href="#settings" class="link">setting</a>
-    </header>
+        <a href="#about" class="link">about</a>
+    </nav>
+</header>
     <div>
         <main id="main-content">
-        <section id="about">
+        <section id="home">
             <h2>Welcome</h2>
             <p>Welcome to campus life tracker</p>
             <a href="https://github.com/Umwarichrista1/campus-life-planner">GITHUB</a>
              
 </section>
         <section id="dashboard">
-            <h3 id="trend-title">Dashboard</h3>
+            <h2 >Dashboard</h2>
             <p>View your dashboard information here.</p>
             <p>total task: <span id="stat-total">0</span></p>
             <p>Total duration: <span id="stat-duration">0</span></p>
             <p>tag: <span id="stat-tag">-</span></p>
-            <h4>last 7 days</h4>
+            <h3 id="trend-title">last 7 days</h3>
             <div id="trend" class="trend" role="img" aria-label="Label 7 days trend" ></div>
             <p id="cap-polite" role="status" aria-live="polite"></p>
             <p id="cap-assertive" role="alert" aria-live="assertive"></p>
             </section>
        
        <section id="add-edit">
-    <h5>Add / Edit Task</h5>
+    <h2>Add / Edit Task</h2>
 
     <form id="record-form" novalidate>
         <label for="title">Title</label>
@@ -54,7 +58,7 @@
         <p class="error" id="duration-error"></p>
 
         <label for="tag">Tag</label>
-        <input type="text" id="tag" name="tag" aria-describedby="t-error">
+        <input type="text" id="tag" name="tag" aria-describedby="tag-error">
         <p class="error" id="tag-error"></p>
 
         <button type="submit">Save task</button>
@@ -70,7 +74,7 @@
             <label for="search">Search </label>
              <input id="search" type="search">
              <label for="case-toggle">
-             <input type="checkbox" name="" id="case-toggle">Ignore upper/lower case
+             <input type="checkbox" id="case-toggle">Ignore upper/lower case
              </label>
              <p id="search-msg" role="status"></p>
     
@@ -86,15 +90,15 @@
                
             </select>
 
-          
+          <div class="table-wrap">
            <table border="2">
           <thead>
             <tr>
-              <th>Title</th>
-              <th>Due date</th>
-              <th>Duration</th>
-              <th>Tag</th>
-              <th>Actions</th>
+              <th scope="col">Title</th>
+              <th scope="col">Due date</th>
+              <th scope="col">Duration</th>
+              <th scope="col">Tag</th>
+              <th scope="col">Actions</th>
             </tr>
           </thead>
           <tbody id="records-body">
@@ -104,14 +108,14 @@
             </tr>
           </tbody>
         </table>
-    
+          </div>
         </section>
 
         <section id="settings">
             <h2>Settings</h2>
             <p>Manage your application settings here.</p>
              <label for="cap" >Weekly cap (minutes)</label>
-             <input id="cap" type="text" type="text" inputmode="decimal" aria-describedby="cap-error">
+             <input id="cap" type="text" inputmode="decimal" aria-describedby="cap-error">
              <p class="error" id="cap-error"></p>
 
              <label for="unit"> show duration in</label>
@@ -119,6 +123,7 @@
                 <option value="minutes">Minutes</option>
                 <option value="hours">Hours</option>
              </select>
+
              <h3>Backup</h3>
              <button type="button" id="export-btn">Export JSON</button>
 
@@ -130,10 +135,23 @@
 
 
         </section>
+
+        <section id="about">
+            <h2>About us</h2>
+            <p>Campus Life Planner helps students keep track of tasks and events: what is due, how long it takes, and which category it belongs to. You can search with regex, sort, see weekly totals, and back up your data as JSON.</p>
+            <h3>Contact</h3>
+            <ul>
+                <li>GitHub: <a href="https://github.com/Umwarichrista1/campus-life-planner">Umwarichrista1/campus-life-planner</a></li>
+                <li>Email: <a href="mailto:c.niyonseng@alustudent.com">c.niyonseng@alustudent.com</a></li>
+               </ul>
+            
+
+        </section>
     </main>
     <footer class="footer">
-        <p>&copy; 2026 Campus Life Planner. All rights reserved.</p> 
-    </footer>
+        <center><p>&copy; 2026 Campus Life Planner. All rights reserved.</p> 
+    </center>
+</footer>
     </div>
     
 </body>

@@ -452,7 +452,7 @@ exportBtn.addEventListener("click",function(){
     const text =JSON.stringify(records, null, 2);
     const blob = new Blob([text],{type: "application/json"});
     const link = document.createElement("a");
-    link.href= URL.createObjectURL(blob);
+    link.href = URL.createObjectURL(blob);
     link.download = "planner-data.json";
     link.click();
     URL.revokeObjectURL(link.href);
