@@ -319,6 +319,7 @@ const re = getRegex();
             });
 
             saveRecords();
+            status.textContent ="Deleted " + r.title;
 
             if(editingId ===r.id){
                 clearForm();
